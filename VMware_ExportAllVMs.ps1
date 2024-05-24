@@ -5,7 +5,6 @@ $AllVcenters = "vcenter1"
 
 # Connect to vCenter
 #Connect-VIServer "vcenter1"
-Di
 
 # Initialise variable
 $report = @()
@@ -52,7 +51,7 @@ foreach ($vCenter in $AllVcenters) {
                 }
             }
 
-
+            # Add VM info to the Report
             $report += [PSCustomObject]@{
                 vCenter = $vCenter
                 Cluster = $cluster
@@ -73,18 +72,14 @@ foreach ($vCenter in $AllVcenters) {
                 DrivePartitions = ($vm.GUest.Disk | sort DiskPath | %{"$($_.DiskPath) $([math]::Round($_.Capacity/1GB)) GB"}) -join ", `n"
                 VMToolStatuse = $vm.Guest.ToolsStatus
                 VMToolVersion = $vm.Guest.ToolsVersion
-            
             }
             
-        
-        }
+        } # End AllVMs loop
         $k = 0
-    
-    }
-
+    } # End AllClusters loop
     $j = 0
    # Disconnect-VIServer $vCenter -Confirm:$false -ErrorAction SilentlyContinue
-}
+} # End AllVcenters Loop
 $i = 0
 
 $report | Export-Csv ".\VMWare_VMs_$(Get-Date -format yyyy-MM-dd-HHmmss).csv" -NoTypeInformation
